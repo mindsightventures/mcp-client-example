@@ -1,12 +1,8 @@
 from contextlib import AsyncExitStack
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from anthropic import Anthropic
-from anthropic.types import (
-    ContentBlockParam,
-    MessageParam,
-    ToolParam,
-)
+from anthropic.types import ContentBlockParam, MessageParam, ToolParam
 from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -95,23 +91,27 @@ class MCPClient:
                 tool_args = content.input
 
                 # Execute tool call
-                result = await self.session.call_tool(tool_name, tool_args)
+                result = await self.session.call_tool(tool_name, cast(Dict[str, Any], tool_args))
                 tool_results.append({"call": tool_name, "result": result})
                 final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
                 assistant_message_content.append(content)  # type: ignore
                 messages.append({"role": "assistant", "content": assistant_message_content})
+                # Cast the message to MessageParam to satisfy type checker
                 messages.append(
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "tool_result",
-                                "tool_use_id": content.id,
-                                "content": result.content,
-                            }
-                        ],
-                    }
+                    cast(
+                        Any,
+                        {
+                            "role": "user",
+                            "content": [
+                                {
+                                    "type": "tool_result",
+                                    "tool_use_id": content.id,
+                                    "content": result.content,
+                                }
+                            ],
+                        },
+                    )
                 )
 
                 # Get next response from Claude
