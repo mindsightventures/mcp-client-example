@@ -1,5 +1,8 @@
 # MCP Client Example
 
+[![CI](https://github.com/mindsightventures/mcp-client-example/actions/workflows/ci.yml/badge.svg)](https://github.com/mindsightventures/mcp-client-example/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/mindsightventures/mcp-client-example/graph/badge.svg?token=JpRATuPYad)](https://codecov.io/gh/mindsightventures/mcp-client-example)
+
 A Python client for the [Model Control Protocol (MCP)](https://github.com/anthropics/anthropic-tools/tree/main/mcp) that allows you to connect to MCP servers and use their tools with Claude.
 
 ## Features
